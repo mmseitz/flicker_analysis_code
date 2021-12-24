@@ -1,0 +1,53 @@
+def isolate_triggers(subject_number, trigger_identity):
+    
+    #isolate triggers from raw .vmrk file
+    
+    import numpy as np
+    subject = subject_number
+    file_name = 'S' + str(subject_number) + '_block' + str(subject_number) + '_cond' + str(subject_number)
+    
+    #read triggers
+    
+    f = open(file_name + '.vmrk') #open .vmrk file, call it 'f'
+    
+    #use readline() to read the first line
+    line = f.readline()
+    
+    #create empty list to record trigger times
+    triggers = []
+    
+    #identify names of triggers, which can be found in the .vmrk file
+    trigger_name = trigger_identity
+    
+    #use the readline() to read through file
+    #if file is not empty, keep reading one line 
+    #at a time until the end
+    while line:
+        
+        #check to make sure that the trigger name is in the line
+        if trigger_name in line:
+            
+            #get trigger time from line
+            start = start = line.find(trigger_name + ',') + len(flicker_trigger_name) + 1
+            end = line.find(',1,')
+            trigger_time = line[start:end]
+            
+            #append the trigger time to list
+            triggers.append(trigger_time)
+            
+        line = f.readline() #use readline() to read next line
+        
+    f.close() #close the file
+    
+    #convert to numpy array
+    all_triggers = np.array(triggers, dtype = np.int)
+    
+    #print out number of triggers
+    print(str(len(all_triggers)) + ' triggers')
+    
+    #save file 
+    print('Saving...')
+    
+    np.save(file_name + '_all_triggers', all_triggers)
+    
+    print('Done')
